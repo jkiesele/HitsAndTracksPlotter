@@ -46,11 +46,13 @@ class HitsAndTracksPlotter(object):
         # Objects that have their own vertices
         self.vertices = ["TrackingPart", "PFCand", ]
 
-        cmap = matplotlib.cm.get_cmap('tab20b')    
+
+        cmap = matplotlib.cm.get_cmap('rainbow')  
+        self.cmap = cmap  
         # For a small number of clusters, make them pretty
-        self.all_colors = [matplotlib.colors.rgb2hex(cmap(i)) for i in range(cmap.N)]
+        #self.all_colors = [matplotlib.colors.rgb2hex(cmap(i)) for i in range(cmap.N)]
         # For a large number fall back to brute force
-        self.all_colors.extend(colors_)
+        #self.all_colors.extend(colors_)
         # Set the preferred colors for specific pdgIds
         self.pdgIdsMap = {1 : "#c8cbcc", 111 : "red", 211 : 'blue', 11 : 'green', 13 : 'orange', 
                 # kaons
@@ -340,7 +342,23 @@ class HitsAndTracksPlotter(object):
         return traces
 
     def mapColors(self, vals):
-        return np.array([self.mapColor(i) for i in vals])
+        def shuffle_truth_colors(inarr):
+            ta = inarr #ak.to_numpy(inarr)
+            out=np.zeros_like(ta)-1
+            unta = np.unique(ta)
+            np.random.seed(42)
+            np.random.shuffle(unta)
+            unta = unta[unta>-0.1]
+            for i in range(len(unta)):
+                out[ta==unta[i]]=i
+            out = np.array(out,dtype='float')
+            out/=float(len(unta)+1.)
+            return out
+        shufcol = shuffle_truth_colors(vals)
+        cols = self.cmap(shufcol)
+        gray = list(matplotlib.colors.to_rgba("#c8cbcc"))
+        cols[shufcol<0] = gray
+        return cols
 
     def mapColor(self, i):
         i = int(i)

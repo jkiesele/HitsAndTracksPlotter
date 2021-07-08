@@ -16,7 +16,7 @@ def parseArgs():
     interactive = parsers.add_parser("interactive", help="Launch and interactive dash session")
     output = parsers.add_parser("output", help="Produce plots as output (not interactive)")
     output.add_argument("-d", "--dataset", default="Gun10Part_CHEPDef_fineCalo_nano_default_transv_p3_p75_p85_long_p1_p9.root", type=str, help="Input file")
-    output.add_argument("-e", "--event", default=1, type=int, help="Event number to show")
+    output.add_argument("-e", "--event", default=0, type=int, help="Event number to show")
     output.add_argument("-o", "--outputFile", default="event_display", type=str, help="Output file")
     output.add_argument("--outDir", default="plots/", type=str, help="Output plots directory")
     return parser.parse_args()
@@ -28,7 +28,7 @@ default_dataset_ = "Gun50Part_CHEPDef_fineCalo_treeMerger_nano.root"
 
 
 dataset = default_dataset_
-ntuple_path = os.path.expanduser("Ntuples/merging_thresholds/")
+ntuple_path = "" #os.path.expanduser("Ntuples/merging_thresholds/")
 print("Set plotter")
 globalplotter = HitsAndTracksPlotter(f"{ntuple_path}/{dataset}")
 
@@ -172,9 +172,9 @@ if __name__ == '__main__':
    elif args.mode == 'output':
       static_plot_opts = {'hitTypes':['RecHitHGC'],
                    'detectors':[],
-                   'colormode':'CaloPartIdx',
+                   'colormode':'MergedSimClusterIdx',
                    'pcolormode':'index', 
-                   'particles':'CaloPart',
+                   'particles':'TrackingPart',
                    'simclusters':'MergedSimCluster',
                    'event':args.event,
                    'nHitFilter':20, 
